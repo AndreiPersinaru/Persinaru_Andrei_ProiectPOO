@@ -65,7 +65,7 @@ public:
 	}
 
 //Constructori si destructor
-	Hartie() :idProdus(1) {
+	Hartie() :idProdus(100) {
 		this->nrMarciInStoc = 0;
 		this->pretProdus = NULL;
 		this->lungime = 0;
@@ -97,12 +97,47 @@ public:
 		for (int i = 0; i < hartie.nrMarciInStoc; i++) {
 			pretProdus[i] = hartie.pretProdus[i];
 		}
-
 	}
 	~Hartie() {
 		if (pretProdus != NULL) {
 			delete[] pretProdus;
 		}
+	}
+
+//Supraincarcare
+	void operator=(const Hartie& hartie) {
+		nrMarciInStoc = hartie.nrMarciInStoc;
+		lungime = hartie.lungime;
+		latime = hartie.latime;
+		if (pretProdus != NULL) {
+			delete[]pretProdus;
+		}
+		pretProdus = new float[hartie.nrMarciInStoc];
+		for (int i = 0; i < hartie.nrMarciInStoc; i++) {
+			pretProdus[i] = hartie.pretProdus[i];
+		}
+	}
+	friend ostream& operator<<(ostream& out, const Hartie& hartie) {
+		cout << "In " << magazin << " se afla hartie (ID:" << hartie.idProdus << ") de lungime " << hartie.lungime << " si latime " << hartie.latime << ". Avem " << hartie.nrMarciInStoc << " marci diferite la preturile de: ";
+		if (hartie.nrMarciInStoc != 0) {
+			for (int i = 0; i < hartie.nrMarciInStoc; i++) {
+				cout << hartie.pretProdus[i] << "RON ";
+			}
+			cout << endl;
+		}
+		else cout << "-" << endl;
+		return out;
+	}
+	float& operator[](int index) {
+		if (index > 0 && index < this->nrMarciInStoc) {
+			return this->pretProdus[index];
+		}
+	}
+	Hartie& operator++() {
+		for (int i = 0; i < this->nrMarciInStoc; i++) {
+			this->pretProdus[i] += 1;
+		}
+		return *this;
 	}
 
 	void afisare() {
@@ -180,7 +215,7 @@ public:
 	}
 
 //Constructori si destructor
-	Pix() :idProdus(2) {
+	Pix() :idProdus(200) {
 		this->nrMarciInStoc = 0;
 		this->pretProdus = NULL;
 		this->pixCuGel = false;
@@ -217,6 +252,55 @@ public:
 		if (pretProdus != NULL) {
 			delete[] pretProdus;
 		}
+	}
+
+//Supraincarcare
+	void operator=(const Pix& pix) {
+			nrMarciInStoc = pix.nrMarciInStoc;
+			pixCuGel = pix.pixCuGel;
+			culoare = pix.culoare;
+			if (pretProdus != NULL) {
+				delete[]pretProdus;
+			}
+			pretProdus = new float[pix.nrMarciInStoc];
+			for (int i = 0; i < pix.nrMarciInStoc; i++) {
+				pretProdus[i] = pix.pretProdus[i];
+			}
+	}
+	friend ostream& operator<<(ostream& out, const Pix& pix) {
+		cout << "In " << magazin << " se afla pixuri (ID:" << pix.idProdus << ") de culoarea " << pix.culoare;
+		if (pix.pixCuGel) {
+			cout << ", cu gel. ";
+		}
+		else cout << ", fara gel. ";
+		cout << "Avem " << pix.nrMarciInStoc << " marci diferite la preturile de: ";
+		if (pix.nrMarciInStoc != 0) {
+			for (int i = 0; i < pix.nrMarciInStoc; i++) {
+				cout << pix.pretProdus[i] << "RON ";
+			}
+			cout << endl;
+		}
+		else cout << "-" << endl;
+		return out;
+	}
+	bool operator==(const Pix& pix) {
+		int num = 0;
+		if (this->idProdus == pix.idProdus && this->nrMarciInStoc == pix.nrMarciInStoc && this->pixCuGel == pix.pixCuGel && this->culoare == pix.culoare) {
+			num++;
+		}
+		for (int i = 0; i < this->nrMarciInStoc; i++) {
+			if (this->pretProdus[i] == pix.pretProdus[i]) {
+				num++;
+			}
+		}
+		if (num == nrMarciInStoc + 1) return true;
+		else return false;
+	}
+	Pix& operator++(int) {
+		for (int i = 0; i < this->nrMarciInStoc; i++) {
+			this->pretProdus[i]++;
+		}
+		return *this;
 	}
 
 	void afisare() {
@@ -299,7 +383,7 @@ public:
 	}
 
 //Constructori si destructor
-	Caiet():idProdus(3){
+	Caiet():idProdus(300){
 		this->nrMarciInStoc = 0;
 		this->pretProdus = NULL;
 		this->nrFile = 0;
@@ -338,6 +422,50 @@ public:
 		if (pretProdus != NULL) {
 			delete[] pretProdus;
 		}
+	}
+
+//Supraincarcare
+	void operator=(const Caiet& caiet) {
+			nrMarciInStoc = caiet.nrMarciInStoc;
+			nrFile = caiet.nrFile;
+			tipCaiet = caiet.tipCaiet;
+			if (pretProdus != NULL) {
+				delete[]pretProdus;
+			}
+			pretProdus = new float[caiet.nrMarciInStoc];
+			for (int i = 0; i < caiet.nrMarciInStoc; i++) {
+				pretProdus[i] = caiet.pretProdus[i];
+			}
+	}
+	friend ostream& operator<<(ostream& out, const Caiet& caiet) {
+		cout << "In " << magazin << " se afla caiete (ID:" << caiet.idProdus << ") cu " << caiet.nrFile << " de file tip " << caiet.tipCaiet << ". Avem " << caiet.nrMarciInStoc << " marci diferite la preturile de: ";
+		if (caiet.nrMarciInStoc != 0) {
+			for (int i = 0; i < caiet.nrMarciInStoc; i++) {
+				cout << caiet.pretProdus[i] << "RON ";
+			}
+			cout << endl;
+		}
+		else cout << "-" << endl;
+		return out;
+	}
+	bool operator!=(const Caiet& caiet){
+		int num = 0;
+		if (this->idProdus == caiet.idProdus && this->nrMarciInStoc == caiet.nrMarciInStoc && this->nrFile == caiet.nrFile && this->tipCaiet == caiet.tipCaiet) {
+			num++;
+		}
+		for (int i = 0; i < this->nrMarciInStoc; i++) {
+			if (this->pretProdus[i] == caiet.pretProdus[i]) {
+				num++;
+			}
+		}
+		if (num == nrMarciInStoc + 1) return false;
+		else return true;
+	}
+	Caiet& operator--(int) {
+		for (int i = 0; i < this->nrMarciInStoc; i++) {
+			this->pretProdus[i]--;
+		}
+		return *this;
 	}
 
 	void afisare() {
@@ -406,8 +534,13 @@ void main() {
 	cout << "Get-er lungime: " << hartie4.getLungime() << endl;
 	cout << "Get-er latime: " << hartie4.getLatime() << endl;
 //Functie globala friend
-	cout << "Pretul mediu pentru hartie este de: " << pretMediuHartie(hartie4) << "RON" << endl << endl;
-
+	cout << "Pretul mediu pentru hartie este de: " << pretMediuHartie(hartie4) << "RON" << endl;
+//Utilizare operatori
+	hartie1 = hartie4;
+	cout << hartie1;
+	cout << "Pretul pentru acest produs este de " << hartie1[2] << "RON." << endl;
+	cout << "Pretul pentru acest produs este de " << ++hartie1[2] << "RON." << endl;
+	cout << endl;
 
 //PIX - Initializarea obiectelor
 	float* pretPix = new float[4] {2.99, 3.50, 4.99, 8.00};
@@ -444,6 +577,15 @@ void main() {
 	cout << "Get-er culoare: " << pix4.getCuloare() << endl;
 //Functie globala friend
 	generareFactura(pix4, 5, 2);
+//Utilizare operatori
+	pix1 = pix4;
+	cout << pix1;
+	pix1++;
+	cout << pix1;
+	if (pix1 == pix4) {
+		cout << "Obiectele sunt la fel." << endl;
+	}
+	else cout << "Obiectele difera." << endl;
 	cout << endl;
 
 //CAIET - Initializarea obiectelor
@@ -474,5 +616,19 @@ void main() {
 	}
 	cout << endl;
 	cout << "Get-er numar file: " << caiet4.getNrFIle() << endl;
-	cout << "Get-er tip caiet: " << caiet4.getTipCaiet() << endl << endl;
+	cout << "Get-er tip caiet: " << caiet4.getTipCaiet() << endl;
+//Utilizare operatori
+	caiet1 = caiet4;
+	cout << caiet1;
+	caiet1--;
+	cout << caiet1;
+	if (caiet1 != caiet4) {
+		cout << "Obiectele difera." << endl;
+	}
+	else cout << "Obiectele sunt la fel." << endl;
+	cout << endl;
+
+	delete[]pretHartie;
+	delete[]pretPix;
+	delete[]pretCaiet;
 }
