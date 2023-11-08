@@ -296,11 +296,12 @@ public:
 		if (num == nrMarciInStoc + 1) return true;
 		else return false;
 	}
-	Pix& operator++(int) {
+	Pix operator++(int) {
+		Pix aux = *this;
 		for (int i = 0; i < this->nrMarciInStoc; i++) {
 			this->pretProdus[i]++;
 		}
-		return *this;
+		return aux;
 	}
 
 	void afisare() {
@@ -461,7 +462,7 @@ public:
 		if (num == nrMarciInStoc + 1) return false;
 		else return true;
 	}
-	Caiet& operator--(int) {
+	Caiet& operator--() {
 		for (int i = 0; i < this->nrMarciInStoc; i++) {
 			this->pretProdus[i]--;
 		}
@@ -579,8 +580,7 @@ void main() {
 	generareFactura(pix4, 5, 2);
 //Utilizare operatori
 	pix1 = pix4;
-	cout << pix1;
-	pix1++;
+	cout << pix1++;
 	cout << pix1;
 	if (pix1 == pix4) {
 		cout << "Obiectele sunt la fel." << endl;
@@ -620,8 +620,7 @@ void main() {
 //Utilizare operatori
 	caiet1 = caiet4;
 	cout << caiet1;
-	caiet1--;
-	cout << caiet1;
+	cout << --caiet1;
 	if (caiet1 != caiet4) {
 		cout << "Obiectele difera." << endl;
 	}
