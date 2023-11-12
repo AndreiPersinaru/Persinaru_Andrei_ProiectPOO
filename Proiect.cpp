@@ -125,11 +125,31 @@ public:
 			}
 			cout << endl;
 		}
-		else cout << "-" << endl;
+		else cout << "- " << endl;
 		return out;
 	}
+	friend istream& operator>>(istream& in, Hartie& hartie) {
+		cout << "Introdu lungime hartiei: ";
+		in >> hartie.lungime;
+		cout << "Introdu latimea hartiei: ";
+		in >> hartie.latime;
+		cout << "Introdu numarul de marci in stoc: ";
+		in >> hartie.nrMarciInStoc;
+		if (hartie.pretProdus != NULL) {
+			delete[]hartie.pretProdus;
+		}
+		if (hartie.nrMarciInStoc > 0){
+			hartie.pretProdus = new float[hartie.nrMarciInStoc];
+			cout << "Introdu preturile pentru hartie: ";
+			for (int i = 0; i < hartie.nrMarciInStoc; i++) {
+				in >> hartie.pretProdus[i];
+			}
+		}
+
+		return in;
+	}
 	float& operator[](int index) {
-		if (index > 0 && index < this->nrMarciInStoc) {
+		if (index >= 0 && index < this->nrMarciInStoc) {
 			return this->pretProdus[index];
 		}
 	}
@@ -282,6 +302,25 @@ public:
 		}
 		else cout << "-" << endl;
 		return out;
+	}
+	friend istream& operator>>(istream& in, Pix& pix) {
+		cout << "Este pixul cu gel? (1 = true / 0 = false): ";
+		in >> pix.pixCuGel;
+		cout << "Introdu culoarea: ";
+		in >> pix.culoare;
+		cout << "Introdu numarul de marci in stoc: ";
+		in >> pix.nrMarciInStoc;
+		if (pix.pretProdus != NULL) {
+			delete[]pix.pretProdus;
+		}
+		if (pix.nrMarciInStoc > 0) {
+			pix.pretProdus = new float[pix.nrMarciInStoc];
+			cout << "Introdu preturile pentru pixuri: ";
+			for (int i = 0; i < pix.nrMarciInStoc; i++) {
+				in >> pix.pretProdus[i];
+			}
+		}		
+		return in;
 	}
 	bool operator==(const Pix& pix) {
 		int num = 0;
@@ -449,6 +488,26 @@ public:
 		else cout << "-" << endl;
 		return out;
 	}
+	friend istream& operator>>(istream& in, Caiet& caiet) {
+		cout << "Introdu numarul de file: ";
+		in >> caiet.nrFile;
+		cout << "Introdu tipul de caiet: ";
+		in >> caiet.tipCaiet;
+		cout << "Introdu numarul de marci in stoc: ";	
+		in >> caiet.nrMarciInStoc;
+		if (caiet.pretProdus != NULL) {
+			delete[]caiet.pretProdus;
+		}
+		if (caiet.nrMarciInStoc > 0) {
+			caiet.pretProdus = new float[caiet.nrMarciInStoc];
+			cout << "Introdu preturile pentru caiete: ";
+			for (int i = 0; i < caiet.nrMarciInStoc; i++) {
+				in >> caiet.pretProdus[i];
+			}
+		}
+
+		return in;
+	}
 	bool operator!=(const Caiet& caiet){
 		int num = 0;
 		if (this->idProdus == caiet.idProdus && this->nrMarciInStoc == caiet.nrMarciInStoc && this->nrFile == caiet.nrFile && this->tipCaiet == caiet.tipCaiet) {
@@ -542,6 +601,28 @@ void main() {
 	cout << "Pretul pentru acest produs este de " << hartie1[2] << "RON." << endl;
 	cout << "Pretul pentru acest produs este de " << ++hartie1[2] << "RON." << endl;
 	cout << endl;
+//Vector hartie
+	Hartie* pHartie = new Hartie[2];
+	for (int i = 0; i < 2; i++) {
+		cout << "Hartie " << i + 1 << ": " << endl;
+		cin >> pHartie[i];
+		cout << endl;
+	}
+	for (int i = 0; i < 2; i++){
+		cout << pHartie[i];
+	}
+//Matrice
+	cout << endl << "Matrice: " << endl;
+	int n = 3;
+	Hartie** ppHartie = new Hartie* [n];
+	for (int i = 0; i < n; i++) {
+		ppHartie[i] = new Hartie();
+	}
+	for (int i = 0; i < n; i++) {
+		cout << *ppHartie[i];
+	}
+	cout << endl;
+	
 
 //PIX - Initializarea obiectelor
 	float* pretPix = new float[4] {2.99, 3.50, 4.99, 8.00};
@@ -587,6 +668,17 @@ void main() {
 	}
 	else cout << "Obiectele difera." << endl;
 	cout << endl;
+//Vector pix
+	Pix* pPix = new Pix[2];
+	for (int i = 0; i < 2; i++) {
+		cout << "Pix " << i + 1 << ": " << endl;
+		cin >> pPix[i];
+		cout << endl;
+	}
+	for (int i = 0; i < 2; i++){
+		cout << pPix[i];
+	}
+	cout << endl;
 
 //CAIET - Initializarea obiectelor
 	float* pretCaiet = new float[2] {9.99, 17.50};
@@ -626,8 +718,26 @@ void main() {
 	}
 	else cout << "Obiectele sunt la fel." << endl;
 	cout << endl;
+//Vector caiet
+	Caiet* pCaiet = new Caiet[2];
+	for (int i = 0; i < 2; i++) {
+		cout << "Caiet " << i + 1 << ": " << endl;
+		cin >> pCaiet[i];
+		cout << endl;
+	}
+	for (int i = 0; i < 2; i++){
+		cout << pCaiet[i];
+	}
+	cout << endl;
 
 	delete[]pretHartie;
 	delete[]pretPix;
 	delete[]pretCaiet;
+	delete[]pHartie;
+	delete[]pPix;
+	delete[]pCaiet;
+	for (int i = 0; i < 2; i++){
+		delete ppHartie[i];
+	}
+	delete[]ppHartie;
 }
