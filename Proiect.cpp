@@ -616,10 +616,12 @@ void main() {
 	int n = 3;
 	Hartie** ppHartie = new Hartie* [n];
 	for (int i = 0; i < n; i++) {
-		ppHartie[i] = new Hartie();
+		ppHartie[i] = new Hartie[2];
 	}
 	for (int i = 0; i < n; i++) {
-		cout << *ppHartie[i];
+		for (int j = 0; j < 2; j++) {
+			cout <<	ppHartie[i][j];
+		}
 	}
 	cout << endl;
 	
