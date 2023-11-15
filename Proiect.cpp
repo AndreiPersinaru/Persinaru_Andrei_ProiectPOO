@@ -323,17 +323,16 @@ public:
 		return in;
 	}
 	bool operator==(const Pix& pix) {
-		int num = 0;
-		if (this->idProdus == pix.idProdus && this->nrMarciInStoc == pix.nrMarciInStoc && this->pixCuGel == pix.pixCuGel && this->culoare == pix.culoare) {
-			num++;
+		bool ok = true;
+		if (this->idProdus != pix.idProdus || this->nrMarciInStoc != pix.nrMarciInStoc || this->pixCuGel != pix.pixCuGel || this->culoare != pix.culoare) {
+			ok = false;
 		}
 		for (int i = 0; i < this->nrMarciInStoc; i++) {
-			if (this->pretProdus[i] == pix.pretProdus[i]) {
-				num++;
+			if (this->pretProdus[i] != pix.pretProdus[i]) {
+				ok = false;
 			}
 		}
-		if (num == nrMarciInStoc + 1) return true;
-		else return false;
+		return ok;
 	}
 	Pix operator++(int) {
 		Pix aux = *this;
@@ -508,18 +507,17 @@ public:
 
 		return in;
 	}
-	bool operator!=(const Caiet& caiet){
-		int num = 0;
-		if (this->idProdus == caiet.idProdus && this->nrMarciInStoc == caiet.nrMarciInStoc && this->nrFile == caiet.nrFile && this->tipCaiet == caiet.tipCaiet) {
-			num++;
+	bool operator!=(const Caiet& caiet) {
+		bool ok = false;
+		if (this->idProdus != caiet.idProdus || this->nrMarciInStoc != caiet.nrMarciInStoc || this->nrFile != caiet.nrFile || this->tipCaiet != caiet.tipCaiet) {
+			ok = true;
 		}
 		for (int i = 0; i < this->nrMarciInStoc; i++) {
-			if (this->pretProdus[i] == caiet.pretProdus[i]) {
-				num++;
+			if (this->pretProdus[i] != caiet.pretProdus[i]) {
+				ok = true;
 			}
 		}
-		if (num == nrMarciInStoc + 1) return false;
-		else return true;
+		return ok;
 	}
 	Caiet& operator--() {
 		for (int i = 0; i < this->nrMarciInStoc; i++) {
@@ -739,7 +737,7 @@ void main() {
 	delete[]pPix;
 	delete[]pCaiet;
 	for (int i = 0; i < 2; i++){
-		delete ppHartie[i];
+		delete[] ppHartie[i];
 	}
 	delete[]ppHartie;
 }
