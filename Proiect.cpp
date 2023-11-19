@@ -105,7 +105,7 @@ public:
 	}
 
 //Supraincarcare
-	void operator=(const Hartie& hartie) {
+	const Hartie& operator=(const Hartie& hartie) {
 		nrMarciInStoc = hartie.nrMarciInStoc;
 		lungime = hartie.lungime;
 		latime = hartie.latime;
@@ -116,6 +116,7 @@ public:
 		for (int i = 0; i < hartie.nrMarciInStoc; i++) {
 			pretProdus[i] = hartie.pretProdus[i];
 		}
+		return *this;
 	}
 	friend ostream& operator<<(ostream& out, const Hartie& hartie) {
 		cout << "In " << magazin << " se afla hartie (ID:" << hartie.idProdus << ") de lungime " << hartie.lungime << " si latime " << hartie.latime << ". Avem " << hartie.nrMarciInStoc << " marci diferite la preturile de: ";
@@ -275,17 +276,18 @@ public:
 	}
 
 //Supraincarcare
-	void operator=(const Pix& pix) {
-			nrMarciInStoc = pix.nrMarciInStoc;
-			pixCuGel = pix.pixCuGel;
-			culoare = pix.culoare;
-			if (pretProdus != NULL) {
-				delete[]pretProdus;
-			}
-			pretProdus = new float[pix.nrMarciInStoc];
-			for (int i = 0; i < pix.nrMarciInStoc; i++) {
-				pretProdus[i] = pix.pretProdus[i];
-			}
+	const Pix& operator=(const Pix& pix) {
+		nrMarciInStoc = pix.nrMarciInStoc;
+		pixCuGel = pix.pixCuGel;
+		culoare = pix.culoare;
+		if (pretProdus != NULL) {
+			delete[]pretProdus;
+		}
+		pretProdus = new float[pix.nrMarciInStoc];
+		for (int i = 0; i < pix.nrMarciInStoc; i++) {
+			pretProdus[i] = pix.pretProdus[i];
+		}
+		return *this;
 	}
 	friend ostream& operator<<(ostream& out, const Pix& pix) {
 		cout << "In " << magazin << " se afla pixuri (ID:" << pix.idProdus << ") de culoarea " << pix.culoare;
@@ -410,7 +412,7 @@ public:
 	void setNrFile(int nrFile) {
 		this->nrFile = nrFile;
 	}
-	int getNrFIle() {
+	int getNrFile() {
 		return nrFile;
 	}
 
@@ -538,6 +540,97 @@ public:
 	}
 };
 
+class Comanda {
+private:
+	Hartie* produs;
+	const int idComanda;
+	static int numarComenzi;
+	string adresaLivrare;
+	int cantitate;
+	bool expediat;
+
+public:
+//Get-eri si Set-eri
+	int getIdComanda() {
+		return idComanda;
+	}
+
+	static int getNumarComenzi() {
+		return numarComenzi;
+	}
+
+	void setProdus(Hartie* produs) {
+		this->produs = produs;
+	}
+	Hartie* getProdus() {
+		return produs;
+	}
+
+	void setAdresaLivrare(string adresaLivrare) {
+		this->adresaLivrare = adresaLivrare;
+	}
+	string getAdresaLivrare() {
+		return adresaLivrare;
+	}
+
+	void setCantitate(int cantitate) {
+		this->cantitate = cantitate;
+	}
+	int getCantitate() {
+		return cantitate;
+	}
+
+	void setExpediat(bool expediat) {
+		this->expediat = expediat;
+	}
+	bool getExpediat() {
+		return expediat;
+	}
+
+//Constructori
+	Comanda() : idComanda(++numarComenzi){
+		this->produs = NULL;
+		this->adresaLivrare = "-"; 
+		this->cantitate = 0;
+		this->expediat = false;
+	}
+	Comanda(Hartie* produs, string adresaLivrare, int cantitate, bool expediat): idComanda(++numarComenzi){
+		this->produs = produs;
+		this->adresaLivrare = adresaLivrare;
+		this->cantitate = cantitate;
+		this->expediat = expediat;
+	}
+
+//Supraincarcare
+	Comanda& operator=(const Comanda& comanda) {
+		produs = comanda.produs;
+		adresaLivrare = comanda.adresaLivrare;
+		cantitate = comanda.cantitate;
+		expediat = comanda.expediat;
+		return *this;
+	}
+	bool operator==(const Comanda& comanda) {
+		return idComanda == comanda.idComanda && produs == comanda.produs && adresaLivrare == comanda.adresaLivrare && cantitate == comanda.cantitate && expediat == comanda.expediat;
+	}
+	Comanda& operator++() {
+		expediat = true;
+		return *this;
+	}
+
+	void afisare() {
+		cout << "Comanda nr. " << idComanda << " - Detalii:" << endl;
+		if (produs != nullptr) {
+			cout << "Produs comandat: Hartie " << endl;
+		}
+		else {
+			cout << "Produs comandat: - " << endl;
+		}
+		cout << "Adresa livrare: " << adresaLivrare << endl;
+		cout << "Cantitate comandata: " << cantitate << endl;
+		cout << "Status expediere: " << (expediat ? "Expediat" : "Neexpediat") << endl << endl;
+	}
+};
+
 float pretMediuHartie(const Hartie& hartie) {
 	if (hartie.nrMarciInStoc > 0) {
 		float suma = 0;
@@ -560,6 +653,7 @@ void generareFactura(const Pix& pix, int cantitateCumparata, int indexProdus) {
 string Hartie::magazin = "Papetarie S.R.L.";
 string Pix::magazin = "Papetarie S.R.L.";
 string Caiet::magazin = "Papetarie S.R.L.";
+int Comanda::numarComenzi = 0;
 
 void main() {
 //HARTIE - Initializarea obiectelor
@@ -707,7 +801,7 @@ void main() {
 		cout << caiet4.getPretProdus()[i] << " ";
 	}
 	cout << endl;
-	cout << "Get-er numar file: " << caiet4.getNrFIle() << endl;
+	cout << "Get-er numar file: " << caiet4.getNrFile() << endl;
 	cout << "Get-er tip caiet: " << caiet4.getTipCaiet() << endl;
 //Utilizare operatori
 	caiet1 = caiet4;
@@ -729,6 +823,39 @@ void main() {
 		cout << pCaiet[i];
 	}
 	cout << endl;
+
+//COMANDA - Initializarea obiectelor
+	Comanda comanda1;
+	Comanda comanda2(&hartie2, "Sos. Pantelimon nr.139", 30, false);
+//Afisare
+	comanda1.afisare();
+	comanda2.afisare();
+//Set-eri
+	comanda1.setAdresaLivrare("Sos. Iancului nr.58");
+	comanda1.setCantitate(23);
+	comanda1.setExpediat(true);
+	comanda1.setProdus(&hartie3);
+//Get-eri
+	cout << "Get-er adresa livrare: " << comanda1.getAdresaLivrare() << endl;
+	cout << "Get-er cantitate: " << comanda1.getCantitate() << endl;
+	cout << "Get-er status expediere: ";
+	if (comanda1.getExpediat()) {
+		cout << "Produs expediat. " << endl;
+	}
+	else {
+		cout << "Produsul nu a fost expediat. " << endl;
+	}
+	cout << "Get-er produs: " << *(comanda1.getProdus()) << endl;
+//Utilizare operatori
+	Comanda comanda3 = comanda2;
+	comanda3.afisare();
+	if (comanda3 == comanda2) {
+		cout << "Aceeasi comanda. " << endl;
+	}
+	else {
+		cout << "Comenzile sunt diferite" << endl;
+	}
+	(++comanda2).afisare();
 
 	delete[]pretHartie;
 	delete[]pretPix;
