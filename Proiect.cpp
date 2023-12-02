@@ -1,11 +1,12 @@
 //Domeniu - papetarie
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
 class Hartie {
-private:
+public:
 	const int idProdus;
 	static string magazin;
 	int nrMarciInStoc;
@@ -746,6 +747,160 @@ public:
 	}
 };
 
+class HartieCreponata :public Hartie{
+private:
+	int densitate;
+	string culoare;
+
+public:
+//Get-eri si Set-eri
+	void setDensitate(int densitate) {
+		this->densitate = densitate;
+	}
+	int getDensitate() {
+		return densitate;
+	}
+
+	void setCuloare(string culoare) {
+		this->culoare = culoare;
+	}
+	string getCuloare() {
+		return culoare;
+	}
+
+
+//Constructori
+	HartieCreponata() :Hartie(110) {
+		densitate = 0;
+		culoare = "necunoscuta";
+	}
+	HartieCreponata(int densitate, string culoare) :Hartie(110, 0, NULL, 29.7, 21) {
+		this->densitate = densitate;
+		this->culoare = culoare;
+	}
+	HartieCreponata(int densitate, string culoare, int idProdus, int nrMarciInStoc, float* pretProdus, float lungime, float latime) : Hartie(idProdus, nrMarciInStoc, pretProdus, lungime, latime) {
+		this->densitate = densitate;
+		this->culoare = culoare;
+	}
+	HartieCreponata(const HartieCreponata& hartieCreponata) : Hartie(hartieCreponata) {
+		this->densitate = hartieCreponata.densitate;
+		this->culoare = hartieCreponata.culoare;
+	}
+
+	//Supraincarcare operatori
+	friend ostream& operator<<(ostream& out, const HartieCreponata& hartieCreponata) {
+		out << "In " << magazin << " se afla hartie creponata (ID:" << hartieCreponata.idProdus << ") de lungime " << hartieCreponata.lungime << " si latime " << hartieCreponata.latime << ". Poti gasi hartie creponata cu densitatea de " << hartieCreponata.densitate << " g/m^2 de culoarea " << hartieCreponata.culoare << ". Avem " << hartieCreponata.nrMarciInStoc << " marci diferite la preturile de : ";
+		if (hartieCreponata.nrMarciInStoc != 0) {
+			for (int i = 0; i < hartieCreponata.nrMarciInStoc; i++) {
+				out << hartieCreponata.pretProdus[i] << "RON ";
+			}
+			out << endl;
+		}
+		else out << "- " << endl;
+		return out;
+	}
+	friend istream& operator>>(istream& in, HartieCreponata& hartieCreponata) {
+		cout << "Introdu lungime hartiei creponate: ";
+		in >> hartieCreponata.lungime;
+		cout << "Introdu latimea hartiei creponate: ";
+		in >> hartieCreponata.latime;
+		cout << "Introdu densitatea hartiei creponate: ";
+		in >> hartieCreponata.densitate;
+		cout << "Introdu culoarea hartiei creponate: ";
+		in >> hartieCreponata.culoare;
+		cout << "Introdu numarul de marci in stoc: ";
+		in >> hartieCreponata.nrMarciInStoc;
+		if (hartieCreponata.pretProdus != NULL) {
+			delete[]hartieCreponata.pretProdus;
+		}
+		if (hartieCreponata.nrMarciInStoc > 0) {
+			hartieCreponata.pretProdus = new float[hartieCreponata.nrMarciInStoc];
+			cout << "Introdu preturile pentru hartia creponata: ";
+			for (int i = 0; i < hartieCreponata.nrMarciInStoc; i++) {
+				in >> hartieCreponata.pretProdus[i];
+			}
+		}
+		return in;
+	}
+};
+
+class HartieGlasata :public Hartie {
+private:
+	int nrColiPerTop;
+	string culoare;
+
+public:
+//Get-eri si Set-eri
+	void setNrColiPerTop(int nrColiPerTop) {
+		this->nrColiPerTop = nrColiPerTop;
+	}
+	int getNrColiPerTop() {
+		return nrColiPerTop;
+	}
+
+	void setCuloare(string culoare) {
+		this->culoare = culoare;
+	}
+	string getCuloare() {
+		return culoare;
+	}
+
+
+//Constructori
+	HartieGlasata() :Hartie(120) {
+		nrColiPerTop = 0;
+		culoare = "necunoscuta";
+	}
+	HartieGlasata(int nrColiPerTop, string culoare) :Hartie(120, 0, NULL, 29.7, 21) {
+		this->nrColiPerTop = nrColiPerTop;
+		this->culoare = culoare;
+	}
+	HartieGlasata(int nrColiPerTop, string culoare, int idProdus, int nrMarciInStoc, float* pretProdus, float lungime, float latime) : Hartie(idProdus, nrMarciInStoc, pretProdus, lungime, latime) {
+		this->nrColiPerTop = nrColiPerTop;
+		this->culoare = culoare;
+	}
+	HartieGlasata(const HartieGlasata& hartieGlasata) : Hartie(hartieGlasata) {
+		this->nrColiPerTop = hartieGlasata.nrColiPerTop;
+		this->culoare = hartieGlasata.culoare;
+	}
+
+//Supraincarcare operatori
+	friend ostream& operator<<(ostream& out, const HartieGlasata& hartieGlasata) {
+		out << "In " << magazin << " se afla hartie glasata (ID:" << hartieGlasata.idProdus << ") de lungime " << hartieGlasata.lungime << " si latime " << hartieGlasata.latime << ". Poti gasi topuri cu " << hartieGlasata.nrColiPerTop << " de coli de culoarea " << hartieGlasata.culoare << ". Avem " << hartieGlasata.nrMarciInStoc << " marci diferite la preturile de : ";
+		if (hartieGlasata.nrMarciInStoc != 0) {
+			for (int i = 0; i < hartieGlasata.nrMarciInStoc; i++) {
+				out << hartieGlasata.pretProdus[i] << "RON ";
+			}
+			out << endl;
+		}
+		else out << "- " << endl;
+		return out;
+	}
+	friend istream& operator>>(istream& in, HartieGlasata& hartieGlasata) {
+		cout << "Introdu lungime hartiei glasante: ";
+		in >> hartieGlasata.lungime;
+		cout << "Introdu latimea hartiei glasante: ";
+		in >> hartieGlasata.latime;
+		cout << "Introdu numarul de coli per top: ";
+		in >> hartieGlasata.nrColiPerTop;
+		cout << "Introdu culoarea hartiei glasante: ";
+		in >> hartieGlasata.culoare;
+		cout << "Introdu numarul de marci in stoc: ";
+		in >> hartieGlasata.nrMarciInStoc;
+		if (hartieGlasata.pretProdus != NULL) {
+			delete[]hartieGlasata.pretProdus;
+		}
+		if (hartieGlasata.nrMarciInStoc > 0) {
+			hartieGlasata.pretProdus = new float[hartieGlasata.nrMarciInStoc];
+			cout << "Introdu preturile pentru hartia glasanta: ";
+			for (int i = 0; i < hartieGlasata.nrMarciInStoc; i++) {
+				in >> hartieGlasata.pretProdus[i];
+			}
+		}
+		return in;
+	}
+};
+
 float pretMediuHartie(const Hartie& hartie) {
 	if (hartie.nrMarciInStoc > 0) {
 		float suma = 0;
@@ -1000,6 +1155,48 @@ void main() {
 	comandaFisier.copiereDinFisierBinar("Comanda.bin");
 	cout << endl << "Copiat din fisier: " << endl << comandaFisier << endl << endl;
 
+//MOSTENIRE
+//HARTIE CREPONATA - Initializarea obiectelor
+	HartieCreponata hartieCreponata1;
+	HartieCreponata hartieCreponata2(40, "rosie");
+	HartieCreponata hartieCreponata3(40, "albastra", 110, 3, pretHartie, 40, 20);
+	HartieCreponata hartieCreponata4(hartieCreponata3);
+//Afisare
+	cout << hartieCreponata1;
+	cout << hartieCreponata2;
+	cout << hartieCreponata3;
+	cout << hartieCreponata4 << endl;
+//Set-eri
+	hartieCreponata1.setDensitate(40);
+	hartieCreponata1.setCuloare("verde");
+//Get-eri
+	cout << "Densitatea hartiei creponate: " << hartieCreponata1.getDensitate() << endl;
+	cout << "Culoarea hartiei creponate: " << hartieCreponata1.getCuloare() << endl << endl;
+//Citire de la tastatura
+	cin >> hartieCreponata1;
+	cout << hartieCreponata1 << endl;
+
+//HARTIE GLASATA - Initializarea obiectelor
+	HartieGlasata hartieGlasata1;
+	HartieGlasata hartieGlasata2(100, "rosie");
+	HartieGlasata hartieGlasata3(100, "albastra", 120, 3, pretHartie, 29.7, 21);
+	HartieGlasata hartieGlasata4(hartieGlasata3);
+//Afisare
+	cout << hartieGlasata1;
+	cout << hartieGlasata2;
+	cout << hartieGlasata3;
+	cout << hartieGlasata4 << endl;
+//Set-eri
+	hartieGlasata1.setNrColiPerTop(100);
+	hartieGlasata1.setCuloare("verde");
+//Get-eri
+	cout << "Densitatea hartiei glasate: " << hartieGlasata1.getNrColiPerTop() << endl;
+	cout << "Culoarea hartiei glasate: " << hartieGlasata1.getCuloare() << endl << endl;
+//Citire de la tastatura
+	cin >> hartieGlasata1;
+	cout << hartieGlasata1 << endl;
+
+//Dezalocare
 	delete[]pretHartie;
 	delete[]pretPix;
 	delete[]pretCaiet;
