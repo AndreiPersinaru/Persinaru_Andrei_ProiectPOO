@@ -1,12 +1,21 @@
 //Domeniu - papetarie
 #include <iostream>
 #include <fstream>
-#include <vector>
 
 using namespace std;
 
-class Hartie {
+class Produs {
 public:
+	virtual void produs() = 0;
+};
+
+class InstrumentDeScris {
+public:
+	virtual void instrumentScris() = 0;
+};
+
+class Hartie :public Produs {
+protected:
 	const int idProdus;
 	static string magazin;
 	int nrMarciInStoc;
@@ -202,9 +211,14 @@ public:
 		else cout << "-" << endl;
 	}
 	friend float pretMediuHartie(const Hartie& hartie);
+
+//Virtual
+	void produs() {
+		cout << "Produs: Hartie" << endl;
+	}
 };
 
-class Pix {
+class Pix :public Produs, public InstrumentDeScris{
 private:
 	const int idProdus;
 	static string magazin;
@@ -398,6 +412,14 @@ public:
 		f.close();
 	}
 
+//Virtual
+	void produs() {
+		cout << "Produs: Pix" << endl;
+	}
+	void instrumentScris() {
+		cout << "Pixul este un instrument de scris." << endl;
+	}
+
 	void afisare() {
 		cout << "In " << magazin << " se afla pixuri (ID:" << idProdus << ") de culoarea " << culoare;
 		if (pixCuGel) {
@@ -416,7 +438,7 @@ public:
 	friend void generareFactura(const Pix& pix, int cantitateCumparata, int indexProdus);
 };
 
-class Caiet {
+class Caiet:public Produs {
 private:
 	const int idProdus;
 	static string magazin;
@@ -608,6 +630,11 @@ public:
 		return in;
 	}
 
+//Virtual
+	void produs() {
+		cout << "Produs: Caiet" << endl;
+	}
+
 	void afisare() {
 		cout << "In " << magazin << " se afla caiete (ID:" << idProdus << ") cu " << nrFile << " de file tip " << tipCaiet << ". Avem " << nrMarciInStoc << " marci diferite la preturile de: ";
 		if (nrMarciInStoc != 0) {
@@ -669,7 +696,10 @@ public:
 
 //Constructori
 	Comanda() : idComanda(++numarComenzi){
-		this->produs = NULL;
+		if (this->produs != NULL) {
+			delete this->produs;
+		}
+		this->produs = new Hartie();
 		this->adresaLivrare = "-"; 
 		this->cantitate = 0;
 		this->expediat = false;
@@ -713,6 +743,7 @@ public:
 //Metode care lucreaza cu fisier binare
 	void scriereInFisierBinar(string numeFisier) {
 		ofstream f(numeFisier, ios::binary | ios::out);
+		f << *produs;
 		f.write((char*)&cantitate, sizeof(int));
 		f.write((char*)&expediat, sizeof(bool));
 		int lungime = adresaLivrare.length() + 1;
@@ -722,6 +753,7 @@ public:
 	}
 	void copiereDinFisierBinar(string numeFisier) {
 		ifstream f(numeFisier, ios::binary | ios::in);
+		f >> *produs;
 		f.read((char*)&cantitate, sizeof(int));
 		f.read((char*)&expediat, sizeof(bool));
 		int lungimeTemp;
@@ -1154,6 +1186,7 @@ void main() {
 	Comanda comandaFisier;
 	comandaFisier.copiereDinFisierBinar("Comanda.bin");
 	cout << endl << "Copiat din fisier: " << endl << comandaFisier << endl << endl;
+	
 
 //MOSTENIRE
 //HARTIE CREPONATA - Initializarea obiectelor
@@ -1196,6 +1229,26 @@ void main() {
 	cin >> hartieGlasata1;
 	cout << hartieGlasata1 << endl;
 
+//Vectori pentru late-binding
+	Produs** produse = new Produs * [5];
+	produse[0] = new Hartie();
+	produse[1] = new Pix();
+	produse[2] = new Hartie();
+	produse[3] = new Caiet();
+	produse[4] = new Caiet();
+	for (int i = 0; i < 5; i++) {
+		produse[i]->produs();
+	}
+	InstrumentDeScris** instrument = new InstrumentDeScris * [5];
+	instrument[0] = new Pix();
+	instrument[1] = new Pix();
+	instrument[2] = new Pix();
+	instrument[3] = new Pix();
+	instrument[4] = new Pix();
+	for (int i = 0; i < 5; i++) {
+		instrument[i]->instrumentScris();
+	}
+
 //Dezalocare
 	delete[]pretHartie;
 	delete[]pretPix;
@@ -1207,4 +1260,8 @@ void main() {
 		delete[] ppHartie[i];
 	}
 	delete[]ppHartie;
+	for (int i = 0; i < 5; i++) {
+		delete produse[i];
+	}
+	delete[]produse;
 }
